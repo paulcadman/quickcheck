@@ -5,6 +5,10 @@ import Test.QuickCheck.Gen open;
 import Test.QuickCheck.Outcome open;
 
 --- A testable predicate from which we can obtain a ;Gen Outcome;
-type Property := mkProperty {getGen : Gen Outcome};
+type Property :=
+  mkProperty@{
+    getGen : Gen Outcome;
+  };
 
-runProp (p : Property) (rand : StdGen) : Outcome := Gen.run (Property.getGen p) rand;
+runProp (p : Property) (rand : StdGen) : Outcome :=
+  Gen.run (Property.getGen p) rand;

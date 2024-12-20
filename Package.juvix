@@ -3,9 +3,9 @@ module Package;
 import PackageDescription.V2 open;
 
 package : Package :=
-  defaultPackage@?{
+  defaultPackage@{
     name := "quickcheck";
-    version := mkVersion 0 17 0;
+    version := mkVersion 0 18 0;
     dependencies := [defaultStdlib];
     main := just "Example.juvix";
   };

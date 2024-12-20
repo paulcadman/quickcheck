@@ -8,9 +8,11 @@ import Data.String open;
 
 import Test.QuickCheckTest as QC;
 
-prop-reverseDoesNotChangeLength (xs : List Int) : Bool := length (reverse xs) == length xs;
+prop-reverseDoesNotChangeLength (xs : List Int) : Bool :=
+  length (reverse xs) == length xs;
 
-prop-reverseReverseIsIdentity (xs : List Int) : Bool := eqListInt xs (reverse (reverse xs));
+prop-reverseReverseIsIdentity (xs : List Int) : Bool :=
+  eqListInt xs (reverse (reverse xs));
 
 prop-tailLengthOneLess (xs : List Int) : Bool :=
   isEmpty xs || ofNat (length (tail xs)) == intSubNat (length xs) 1;
@@ -23,9 +25,13 @@ prop-mergeSumLengths (xs : List Int) (ys : List Int) : Bool :=
 
 prop-partition (xs : List Int) (p : Int -> Bool) : Bool :=
   case partition p xs of
-    lhs, rhs := all p lhs && not (any p rhs) && eqListInt (sortInt xs) (sortInt (lhs ++ rhs));
+    lhs, rhs :=
+      all p lhs
+        && not (any p rhs)
+        && eqListInt (sortInt xs) (sortInt (lhs ++ rhs));
 
-prop-distributive (a : Int) (b : Int) (f : Int -> Int) : Bool := f (a + b) == f a + f b;
+prop-distributive (a : Int) (b : Int) (f : Int -> Int) : Bool :=
+  f (a + b) == f a + f b;
 
 prop-add-sub (a : Int) (b : Int) : Bool := a == a + b - b;
 
@@ -36,17 +42,23 @@ prop-gcd-bad (a : Int) (b : Int) : Bool := gcd a b > ofNat 1;
 gcdNoCoprimeTest : QC.Test := QC.mkTest "no integers are coprime" prop-gcd-bad;
 
 partitionTest : QC.Test :=
-  QC.mkTest "partition: recombination of the output equals the input" prop-partition;
+  QC.mkTest
+    "partition: recombination of the output equals the input"
+    prop-partition;
 
-testDistributive : QC.Test := QC.mkTest "all functions are distributive over +" prop-distributive;
+testDistributive : QC.Test :=
+  QC.mkTest "all functions are distributive over +" prop-distributive;
 
-reverseLengthTest : QC.Test := QC.mkTest "reverse preserves length" prop-reverseDoesNotChangeLength;
+reverseLengthTest : QC.Test :=
+  QC.mkTest "reverse preserves length" prop-reverseDoesNotChangeLength;
 
 reverseReverseIdTest : QC.Test :=
   QC.mkTest "reverse of reverse is identity" prop-reverseReverseIsIdentity;
 
 splitAtRecombineTest : QC.Test :=
-  QC.mkTest "splitAt: recombination of the output is equal to the input list" prop-splitAtRecombine;
+  QC.mkTest
+    "splitAt: recombination of the output is equal to the input list"
+    prop-splitAtRecombine;
 
 mergeSumLengthsTest : QC.Test :=
   QC.mkTest
@@ -54,18 +66,21 @@ mergeSumLengthsTest : QC.Test :=
     prop-mergeSumLengths;
 
 tailLengthOneLessTest : QC.Test :=
-  QC.mkTest "tail: length of output is one less than input unless empty" prop-tailLengthOneLess;
+  QC.mkTest
+    "tail: length of output is one less than input unless empty"
+    prop-tailLengthOneLess;
 
 main : IO :=
   readLn
-    \ {seed :=
+    \{seed :=
       QC.runTestsIO
         100
         (stringToNat seed)
-        [ partitionTest
-        ; reverseLengthTest
-        ; reverseReverseIdTest
-        ; splitAtRecombineTest
-        ; mergeSumLengthsTest
-        ; tailLengthOneLessTest
+        [
+          partitionTest;
+          reverseLengthTest;
+          reverseReverseIdTest;
+          splitAtRecombineTest;
+          mergeSumLengthsTest;
+          tailLengthOneLessTest;
         ]};

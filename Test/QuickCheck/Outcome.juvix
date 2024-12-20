@@ -5,9 +5,9 @@ import Data.Monoid open;
 import Data.String open;
 
 type Failure :=
-  mkFailure {
+  mkFailure@{
     seed : Nat;
-    counterExamples : List String
+    counterExamples : List String;
   };
 
 type Outcome :=
@@ -34,7 +34,7 @@ showOutcomeI : Show Outcome := mkShow showOutcome;
 monoidOutcome : Monoid Outcome :=
   monoid
     success
-    \ {
+    \{
       | x@(failure _) _ := x
       | _ y := y
     };

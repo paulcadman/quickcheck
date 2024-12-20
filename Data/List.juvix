@@ -12,8 +12,13 @@ rangeStep : Nat -> Nat -> List Nat
         | (suc n) xs := go n (n * step :: xs);
     in go n nil;
 
-unzipWith : {A : Type} -> {B : Type} -> {C : Type} -> (A -> B -> C) -> List (Pair A B) -> List C :=
-  map << uncurry;
+unzipWith
+  : {A : Type}
+    -> {B : Type}
+    -> {C : Type}
+    -> (A -> B -> C)
+    -> List (Pair A B)
+    -> List C := map << uncurry;
 
 range : Nat -> List Nat
   | n := rangeStep 1 n;
