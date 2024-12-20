@@ -7,18 +7,22 @@ import Test.QuickCheck.CoArbitrary open;
 
 -- | A generator associated with a type A
 trait
-type Arbitrary (A : Type) := mkArbitrary {gen : Gen A};
+type Arbitrary (A : Type) :=
+  mkArbitrary@{
+    gen : Gen A;
+  };
 
 runArb {A} {{Arbitrary A}} (rand : StdGen) : A := Gen.run Arbitrary.gen rand;
 
 instance
-arbitraryNat : Arbitrary Nat := mkArbitrary (mkGen \ {rand := fst (stdNext rand)});
+arbitraryNat : Arbitrary Nat :=
+  mkArbitrary (mkGen \{rand := fst (stdNext rand)});
 
 instance
 arbitraryInt : Arbitrary Int :=
   mkArbitrary
     (mkGen
-      \ {rand :=
+      \{rand :=
         let
           runRand : Pair Nat StdGen := stdNext rand;
           n : Nat := fst runRand;
@@ -26,13 +30,14 @@ arbitraryInt : Arbitrary Int :=
         in ite isPos (ofNat n) (negSuc n)});
 
 instance
-arbitraryBool : Arbitrary Bool := mkArbitrary (mkGen \ {rand := fst (randBool rand)});
+arbitraryBool : Arbitrary Bool :=
+  mkArbitrary (mkGen \{rand := fst (randBool rand)});
 
 instance
 arbitraryList {A} {{Arbitrary A}} : Arbitrary (List A) :=
   mkArbitrary
     (mkGen
-      \ {rand :=
+      \{rand :=
         let
           randSplit : Pair StdGen StdGen := stdSplit rand;
           rand1 : StdGen := fst randSplit;
@@ -49,14 +54,15 @@ arbitraryList {A} {{Arbitrary A}} : Arbitrary (List A) :=
         in randList rand2 len});
 
 instance
-arbitraryFunction {A B} {{CoArbitrary A}} {{Arbitrary B}} : Arbitrary (A -> B) :=
+arbitraryFunction
+  {A B} {{CoArbitrary A}} {{Arbitrary B}} : Arbitrary (A -> B) :=
   mkArbitrary (promote (CoArbitrary.coarbitrary Arbitrary.gen));
 
 instance
 arbitraryMaybe {A} {{Arbitrary A}} : Arbitrary (Maybe A) :=
   mkArbitrary
     (mkGen
-      \ {rand :=
+      \{rand :=
         let
           randSplit : Pair StdGen StdGen := stdSplit rand;
           rand1 : StdGen := fst randSplit;
@@ -67,10 +73,11 @@ arbitraryMaybe {A} {{Arbitrary A}} : Arbitrary (Maybe A) :=
           | else := nothing});
 
 instance
-arbitraryResult {A B} {{Arbitrary A}} {{Arbitrary B}} : Arbitrary (Result A B) :=
+arbitraryResult
+  {A B} {{Arbitrary A}} {{Arbitrary B}} : Arbitrary (Result A B) :=
   mkArbitrary
     (mkGen
-      \ {rand :=
+      \{rand :=
         let
           randSplit : Pair StdGen StdGen := stdSplit rand;
           rand1 : StdGen := fst randSplit;

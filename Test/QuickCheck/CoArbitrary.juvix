@@ -6,7 +6,10 @@ import Test.QuickCheck.Gen open;
 
 -- | A perturbation of a generator associated with a type B
 trait
-type CoArbitrary (A : Type) := mkCoarbitrary {coarbitrary : {B : Type} -> Gen B -> A -> Gen B};
+type CoArbitrary (A : Type) :=
+  mkCoarbitrary@{
+    coarbitrary : {B : Type} -> Gen B -> A -> Gen B;
+  };
 
 binaryDigits : Nat -> List Nat
   | n :=
@@ -25,14 +28,19 @@ perturb : Int -> StdGen -> StdGen
             splitG : Pair StdGen StdGen := stdSplit g;
           in ite b (snd splitG) (fst splitG);
       terminating
-      digitsParity : List Bool := map (x in binaryDigits (abs n)) x == 0;
-    in for (rand := vary (n < ofNat 0) rand0) (b in digitsParity)
-         vary b rand;
+      digitsParity : List Bool :=
+        map (x in binaryDigits (abs n)) {
+          x == 0
+        };
+    in for (rand := vary (n < ofNat 0) rand0) (b in digitsParity) {
+      vary b rand
+    };
 
 instance
 coarbitraryInt : CoArbitrary Int :=
-  mkCoarbitrary \ {g n := mkGen \ {rand := Gen.run g (perturb n rand)}};
+  mkCoarbitrary \{g n := mkGen \{rand := Gen.run g (perturb n rand)}};
 
 instance
 coarbitraryListInt : CoArbitrary (List Int) :=
-  mkCoarbitrary \ {g xs := mkGen \ {rand := Gen.run g (foldr perturb (perturb 0 rand) xs)}};
+  mkCoarbitrary
+    \{g xs := mkGen \{rand := Gen.run g (foldr perturb (perturb 0 rand) xs)}};
